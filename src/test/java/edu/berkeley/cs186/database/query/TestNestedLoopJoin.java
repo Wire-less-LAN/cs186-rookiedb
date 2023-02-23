@@ -382,11 +382,15 @@ public class TestNestedLoopJoin {
             Iterator<Record> outputIterator = joinOperator.iterator();
             checkIOs(2);
 
+            int meaningless;
             int count = 0;
             while (outputIterator.hasNext() && count < 400 * 400 * 2) {
                 if (count < 200 * 200) {
                     assertEquals("mismatch at record " + count, expectedRecord1, outputIterator.next());
                 } else if (count < 200 * 200 * 2) {
+                    if(count == 79999) {
+                        meaningless = 1;
+                    }
                     assertEquals("mismatch at record " + count, expectedRecord2, outputIterator.next());
                 } else if (count < 200 * 200 * 3) {
                     assertEquals("mismatch at record " + count, expectedRecord1, outputIterator.next());

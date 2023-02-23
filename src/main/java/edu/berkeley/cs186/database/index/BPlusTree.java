@@ -18,37 +18,37 @@ import java.util.*;
 
 /**
  * A persistent B+ tree.
- *
- *   BPlusTree tree = new BPlusTree(bufferManager, metadata, lockContext);
- *
- *   // Insert some values into the tree.
- *   tree.put(new IntDataBox(0), new RecordId(0, (short) 0));
- *   tree.put(new IntDataBox(1), new RecordId(1, (short) 1));
- *   tree.put(new IntDataBox(2), new RecordId(2, (short) 2));
- *
- *   // Get some values out of the tree.
- *   tree.get(new IntDataBox(0)); // Optional.of(RecordId(0, 0))
- *   tree.get(new IntDataBox(1)); // Optional.of(RecordId(1, 1))
- *   tree.get(new IntDataBox(2)); // Optional.of(RecordId(2, 2))
- *   tree.get(new IntDataBox(3)); // Optional.empty();
- *
- *   // Iterate over the record ids in the tree.
- *   tree.scanEqual(new IntDataBox(2));        // [(2, 2)]
- *   tree.scanAll();                             // [(0, 0), (1, 1), (2, 2)]
- *   tree.scanGreaterEqual(new IntDataBox(1)); // [(1, 1), (2, 2)]
- *
- *   // Remove some elements from the tree.
- *   tree.get(new IntDataBox(0)); // Optional.of(RecordId(0, 0))
- *   tree.remove(new IntDataBox(0));
- *   tree.get(new IntDataBox(0)); // Optional.empty()
- *
- *   // Load the tree (same as creating a new tree).
- *   BPlusTree fromDisk = new BPlusTree(bufferManager, metadata, lockContext);
- *
- *   // All the values are still there.
- *   fromDisk.get(new IntDataBox(0)); // Optional.empty()
- *   fromDisk.get(new IntDataBox(1)); // Optional.of(RecordId(1, 1))
- *   fromDisk.get(new IntDataBox(2)); // Optional.of(RecordId(2, 2))
+ * <p>
+ * BPlusTree tree = new BPlusTree(bufferManager, metadata, lockContext);
+ * <p>
+ * // Insert some values into the tree.
+ * tree.put(new IntDataBox(0), new RecordId(0, (short) 0));
+ * tree.put(new IntDataBox(1), new RecordId(1, (short) 1));
+ * tree.put(new IntDataBox(2), new RecordId(2, (short) 2));
+ * <p>
+ * // Get some values out of the tree.
+ * tree.get(new IntDataBox(0)); // Optional.of(RecordId(0, 0))
+ * tree.get(new IntDataBox(1)); // Optional.of(RecordId(1, 1))
+ * tree.get(new IntDataBox(2)); // Optional.of(RecordId(2, 2))
+ * tree.get(new IntDataBox(3)); // Optional.empty();
+ * <p>
+ * // Iterate over the record ids in the tree.
+ * tree.scanEqual(new IntDataBox(2));        // [(2, 2)]
+ * tree.scanAll();                             // [(0, 0), (1, 1), (2, 2)]
+ * tree.scanGreaterEqual(new IntDataBox(1)); // [(1, 1), (2, 2)]
+ * <p>
+ * // Remove some elements from the tree.
+ * tree.get(new IntDataBox(0)); // Optional.of(RecordId(0, 0))
+ * tree.remove(new IntDataBox(0));
+ * tree.get(new IntDataBox(0)); // Optional.empty()
+ * <p>
+ * // Load the tree (same as creating a new tree).
+ * BPlusTree fromDisk = new BPlusTree(bufferManager, metadata, lockContext);
+ * <p>
+ * // All the values are still there.
+ * fromDisk.get(new IntDataBox(0)); // Optional.empty()
+ * fromDisk.get(new IntDataBox(1)); // Optional.of(RecordId(1, 1))
+ * fromDisk.get(new IntDataBox(2)); // Optional.of(RecordId(2, 2))
  */
 public class BPlusTree {
     // Buffer manager
@@ -64,25 +64,26 @@ public class BPlusTree {
     private LockContext lockContext;
 
     // Constructors ////////////////////////////////////////////////////////////
+
     /**
      * Construct a new B+ tree with metadata `metadata` and lock context `lockContext`.
      * `metadata` contains information about the order, partition number,
      * root page number, and type of keys.
-     *
+     * <p>
      * If the specified order is so large that a single node cannot fit on a
      * single page, then a BPlusTree exception is thrown. If you want to have
      * maximally full B+ tree nodes, then use the BPlusTree.maxOrder function
      * to get the appropriate order.
-     *
+     * <p>
      * We additionally write a row to the _metadata.indices table with metadata about
      * the B+ tree:
-     *
-     *   - the name of the tree (table associated with it and column it indexes)
-     *   - the key schema of the tree,
-     *   - the order of the tree,
-     *   - the partition number of the tree,
-     *   - the page number of the root of the tree.
-     *
+     * <p>
+     * - the name of the tree (table associated with it and column it indexes)
+     * - the key schema of the tree,
+     * - the order of the tree,
+     * - the partition number of the tree,
+     * - the page number of the root of the tree.
+     * <p>
      * All pages allocated on the given partition are serializations of inner and leaf nodes.
      */
     public BPlusTree(BufferManager bufferManager, BPlusTreeMetadata metadata, LockContext lockContext) {
@@ -128,26 +129,26 @@ public class BPlusTree {
     }
 
     // Core API ////////////////////////////////////////////////////////////////
+
     /**
      * Returns the value associated with `key`.
-     *
-     *   // Insert a single value into the tree.
-     *   DataBox key = new IntDataBox(42);
-     *   RecordId rid = new RecordId(0, (short) 0);
-     *   tree.put(key, rid);
-     *
-     *   // Get the value we put and also try to get a value we never put.
-     *   tree.get(key);                 // Optional.of(rid)
-     *   tree.get(new IntDataBox(100)); // Optional.empty()
+     * <p>
+     * // Insert a single value into the tree.
+     * DataBox key = new IntDataBox(42);
+     * RecordId rid = new RecordId(0, (short) 0);
+     * tree.put(key, rid);
+     * <p>
+     * // Get the value we put and also try to get a value we never put.
+     * tree.get(key);                 // Optional.of(rid)
+     * tree.get(new IntDataBox(100)); // Optional.empty()
      */
     public Optional<RecordId> get(DataBox key) {
         typecheck(key);
         // TODO(proj4_integration): Update the following line
         LockUtil.ensureSufficientLockHeld(lockContext, LockType.NL);
 
-        // TODO(proj2): implement
-
-        return Optional.empty();
+        // (proj2): implement
+        return root.get(key).getKey(key);
     }
 
     /**
@@ -175,23 +176,23 @@ public class BPlusTree {
     /**
      * Returns an iterator over all the RecordIds stored in the B+ tree in
      * ascending order of their corresponding keys.
-     *
-     *   // Create a B+ tree and insert some values into it.
-     *   BPlusTree tree = new BPlusTree("t.txt", Type.intType(), 4);
-     *   tree.put(new IntDataBox(2), new RecordId(2, (short) 2));
-     *   tree.put(new IntDataBox(5), new RecordId(5, (short) 5));
-     *   tree.put(new IntDataBox(4), new RecordId(4, (short) 4));
-     *   tree.put(new IntDataBox(1), new RecordId(1, (short) 1));
-     *   tree.put(new IntDataBox(3), new RecordId(3, (short) 3));
-     *
-     *   Iterator<RecordId> iter = tree.scanAll();
-     *   iter.next(); // RecordId(1, 1)
-     *   iter.next(); // RecordId(2, 2)
-     *   iter.next(); // RecordId(3, 3)
-     *   iter.next(); // RecordId(4, 4)
-     *   iter.next(); // RecordId(5, 5)
-     *   iter.next(); // NoSuchElementException
-     *
+     * <p>
+     * // Create a B+ tree and insert some values into it.
+     * BPlusTree tree = new BPlusTree("t.txt", Type.intType(), 4);
+     * tree.put(new IntDataBox(2), new RecordId(2, (short) 2));
+     * tree.put(new IntDataBox(5), new RecordId(5, (short) 5));
+     * tree.put(new IntDataBox(4), new RecordId(4, (short) 4));
+     * tree.put(new IntDataBox(1), new RecordId(1, (short) 1));
+     * tree.put(new IntDataBox(3), new RecordId(3, (short) 3));
+     * <p>
+     * Iterator<RecordId> iter = tree.scanAll();
+     * iter.next(); // RecordId(1, 1)
+     * iter.next(); // RecordId(2, 2)
+     * iter.next(); // RecordId(3, 3)
+     * iter.next(); // RecordId(4, 4)
+     * iter.next(); // RecordId(5, 5)
+     * iter.next(); // NoSuchElementException
+     * <p>
      * Note that you CAN NOT materialize all record ids in memory and then
      * return an iterator over them. Your iterator must lazily scan over the
      * leaves of the B+ tree. Solutions that materialize all record ids in
@@ -201,29 +202,29 @@ public class BPlusTree {
         // TODO(proj4_integration): Update the following line
         LockUtil.ensureSufficientLockHeld(lockContext, LockType.NL);
 
-        // TODO(proj2): Return a BPlusTreeIterator.
-
-        return Collections.emptyIterator();
+        // (proj2): Return a BPlusTreeIterator.
+        LeafNode leftmostNode = root.getLeftmostLeaf();
+        return new BPlusTreeIterator(leftmostNode);
     }
 
     /**
      * Returns an iterator over all the RecordIds stored in the B+ tree that
      * are greater than or equal to `key`. RecordIds are returned in ascending
      * of their corresponding keys.
-     *
-     *   // Insert some values into a tree.
-     *   tree.put(new IntDataBox(2), new RecordId(2, (short) 2));
-     *   tree.put(new IntDataBox(5), new RecordId(5, (short) 5));
-     *   tree.put(new IntDataBox(4), new RecordId(4, (short) 4));
-     *   tree.put(new IntDataBox(1), new RecordId(1, (short) 1));
-     *   tree.put(new IntDataBox(3), new RecordId(3, (short) 3));
-     *
-     *   Iterator<RecordId> iter = tree.scanGreaterEqual(new IntDataBox(3));
-     *   iter.next(); // RecordId(3, 3)
-     *   iter.next(); // RecordId(4, 4)
-     *   iter.next(); // RecordId(5, 5)
-     *   iter.next(); // NoSuchElementException
-     *
+     * <p>
+     * // Insert some values into a tree.
+     * tree.put(new IntDataBox(2), new RecordId(2, (short) 2));
+     * tree.put(new IntDataBox(5), new RecordId(5, (short) 5));
+     * tree.put(new IntDataBox(4), new RecordId(4, (short) 4));
+     * tree.put(new IntDataBox(1), new RecordId(1, (short) 1));
+     * tree.put(new IntDataBox(3), new RecordId(3, (short) 3));
+     * <p>
+     * Iterator<RecordId> iter = tree.scanGreaterEqual(new IntDataBox(3));
+     * iter.next(); // RecordId(3, 3)
+     * iter.next(); // RecordId(4, 4)
+     * iter.next(); // RecordId(5, 5)
+     * iter.next(); // NoSuchElementException
+     * <p>
      * Note that you CAN NOT materialize all record ids in memory and then
      * return an iterator over them. Your iterator must lazily scan over the
      * leaves of the B+ tree. Solutions that materialize all record ids in
@@ -234,29 +235,41 @@ public class BPlusTree {
         // TODO(proj4_integration): Update the following line
         LockUtil.ensureSufficientLockHeld(lockContext, LockType.NL);
 
-        // TODO(proj2): Return a BPlusTreeIterator.
-
-        return Collections.emptyIterator();
+        // (proj2): Return a BPlusTreeIterator.
+        LeafNode node = root.get(key);
+        int index = InnerNode.numLessThan(key, node.getKeys());
+        return new BPlusTreeIterator(node, index);
     }
 
     /**
      * Inserts a (key, rid) pair into a B+ tree. If the key already exists in
      * the B+ tree, then the pair is not inserted and an exception is raised.
-     *
-     *   DataBox key = new IntDataBox(42);
-     *   RecordId rid = new RecordId(42, (short) 42);
-     *   tree.put(key, rid); // Success :)
-     *   tree.put(key, rid); // BPlusTreeException :(
+     * <p>
+     * DataBox key = new IntDataBox(42);
+     * RecordId rid = new RecordId(42, (short) 42);
+     * tree.put(key, rid); // Success :)
+     * tree.put(key, rid); // BPlusTreeException :(
      */
     public void put(DataBox key, RecordId rid) {
         typecheck(key);
         // TODO(proj4_integration): Update the following line
         LockUtil.ensureSufficientLockHeld(lockContext, LockType.NL);
 
-        // TODO(proj2): implement
+        // (proj2): implement
         // Note: You should NOT update the root variable directly.
         // Use the provided updateRoot() helper method to change
         // the tree's root if the old root splits.
+        Optional<Pair<DataBox, Long>> opt = root.put(key, rid);
+        if (opt.isPresent()) {
+            List<DataBox> keys = new ArrayList<>();
+            keys.add(0, opt.get().getFirst());
+            List<Long> children = new ArrayList<>();
+            children.add(0, root.getPage().getPageNum());
+            children.add(1, opt.get().getSecond());
+            InnerNode newRoot = new InnerNode(metadata, bufferManager, keys, children, lockContext);
+
+            updateRoot(newRoot);
+        }
 
         return;
     }
@@ -265,18 +278,18 @@ public class BPlusTree {
      * Bulk loads data into the B+ tree. Tree should be empty and the data
      * iterator should be in sorted order (by the DataBox key field) and
      * contain no duplicates (no error checking is done for this).
-     *
+     * <p>
      * fillFactor specifies the fill factor for leaves only; inner nodes should
      * be filled up to full and split in half exactly like in put.
-     *
+     * <p>
      * This method should raise an exception if the tree is not empty at time
-     * of bulk loading. Bulk loading is used when creating a new Index, so think 
-     * about what an "empty" tree should look like. If data does not meet the 
-     * preconditions (contains duplicates or not in order), the resulting 
-     * behavior is undefined. Undefined behavior means you can handle these 
-     * cases however you want (or not at all) and you are not required to 
+     * of bulk loading. Bulk loading is used when creating a new Index, so think
+     * about what an "empty" tree should look like. If data does not meet the
+     * preconditions (contains duplicates or not in order), the resulting
+     * behavior is undefined. Undefined behavior means you can handle these
+     * cases however you want (or not at all) and you are not required to
      * write any explicit checks.
-     *
+     * <p>
      * The behavior of this method should be similar to that of InnerNode's
      * bulkLoad (see comments in BPlusNode.bulkLoad).
      */
@@ -288,32 +301,51 @@ public class BPlusTree {
         // Note: You should NOT update the root variable directly.
         // Use the provided updateRoot() helper method to change
         // the tree's root if the old root splits.
+        if (!(root instanceof LeafNode && ((LeafNode) root).getKeys().size() == 0)) {
+            throw new BPlusTreeException("BulkLoading non-empty tree");
+        }
+
+        while (data.hasNext()) {
+            Optional<Pair<DataBox, Long>> opt = root.bulkLoad(data, fillFactor, this);
+            if (opt.isPresent()) {
+                List<DataBox> keys = new ArrayList<>();
+                keys.add(0, opt.get().getFirst());
+                List<Long> children = new ArrayList<>();
+                children.add(0, root.getPage().getPageNum());
+                children.add(1, opt.get().getSecond());
+                InnerNode newRoot = new InnerNode(metadata, bufferManager, keys, children, lockContext);
+
+                updateRoot(newRoot);
+            }
+        }
 
         return;
     }
 
     /**
      * Deletes a (key, rid) pair from a B+ tree.
-     *
-     *   DataBox key = new IntDataBox(42);
-     *   RecordId rid = new RecordId(42, (short) 42);
-     *
-     *   tree.put(key, rid);
-     *   tree.get(key); // Optional.of(rid)
-     *   tree.remove(key);
-     *   tree.get(key); // Optional.empty()
+     * <p>
+     * DataBox key = new IntDataBox(42);
+     * RecordId rid = new RecordId(42, (short) 42);
+     * <p>
+     * tree.put(key, rid);
+     * tree.get(key); // Optional.of(rid)
+     * tree.remove(key);
+     * tree.get(key); // Optional.empty()
      */
     public void remove(DataBox key) {
         typecheck(key);
         // TODO(proj4_integration): Update the following line
         LockUtil.ensureSufficientLockHeld(lockContext, LockType.NL);
 
-        // TODO(proj2): implement
+        // (proj2): implement
+        root.remove(key);
 
         return;
     }
 
     // Helpers /////////////////////////////////////////////////////////////////
+
     /**
      * Returns a sexp representation of this tree. See BPlusNode.toSexp for
      * more information.
@@ -331,9 +363,9 @@ public class BPlusTree {
      * which illustrates the B+ tree. The details of the file itself is not at
      * all important, just know that if you call tree.toDot() and save the
      * output to a file called tree.dot, then you can run this command
-     *
-     *   dot -T pdf tree.dot -o tree.pdf
-     *
+     * <p>
+     * dot -T pdf tree.dot -o tree.pdf
+     * <p>
      * to create a PDF of the tree.
      */
     public String toDot() {
@@ -341,7 +373,7 @@ public class BPlusTree {
         LockUtil.ensureSufficientLockHeld(lockContext, LockType.NL);
 
         List<String> strings = new ArrayList<>();
-        strings.add("digraph g {" );
+        strings.add("digraph g {");
         strings.add("  node [shape=record, height=0.1];");
         strings.add(root.toDot());
         strings.add("}");
@@ -393,7 +425,9 @@ public class BPlusTree {
         return Math.min(leafOrder, innerOrder);
     }
 
-    /** Returns the partition number that the B+ tree resides on. */
+    /**
+     * Returns the partition number that the B+ tree resides on.
+     */
     public int getPartNum() {
         return metadata.getPartNum();
     }
@@ -424,18 +458,59 @@ public class BPlusTree {
     private class BPlusTreeIterator implements Iterator<RecordId> {
         // TODO(proj2): Add whatever fields and constructors you want here.
 
+        private Optional<LeafNode> rightSibling;
+        private LeafNode curNode;
+        private Iterator<RecordId> ridsIter;
+        private Iterator<DataBox> keysIter;
+        private DataBox curKey;
+
+        public BPlusTreeIterator(LeafNode curNode) {
+            this.curNode = curNode;
+            ridsIter = curNode.getRids().iterator();
+            keysIter = curNode.getKeys().iterator();
+        }
+
+        public BPlusTreeIterator(LeafNode curNode, int index) {
+            this.curNode = curNode;
+            ridsIter = curNode.getRids().iterator();
+            keysIter = curNode.getKeys().iterator();
+            for (int i = 0; i < index; ++i) {
+                ridsIter.next();
+                keysIter.next();
+            }
+        }
+
         @Override
         public boolean hasNext() {
-            // TODO(proj2): implement
-
-            return false;
+            // (proj2): implement
+            rightSibling = curNode.getRightSibling();
+            if (!ridsIter.hasNext()) {
+                return rightSibling.filter(leafNode -> leafNode.getKeys().size() != 0).isPresent();
+            }
+            return true;
         }
 
         @Override
         public RecordId next() {
-            // TODO(proj2): implement
+            // (proj2): implement
 
-            throw new NoSuchElementException();
+            if (!hasNext()) {
+                throw new NoSuchElementException();
+            }
+
+            if (!ridsIter.hasNext()) {
+                ridsIter = rightSibling.get().getRids().iterator();
+                keysIter = rightSibling.get().getKeys().iterator();
+                curNode = rightSibling.get();
+            }
+
+            curKey = keysIter.next();
+            return ridsIter.next();
         }
+
+        public DataBox getKey() {
+            return curKey;
+        }
+
     }
 }
