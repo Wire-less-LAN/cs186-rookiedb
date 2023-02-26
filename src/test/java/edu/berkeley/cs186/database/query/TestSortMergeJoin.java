@@ -196,11 +196,15 @@ public class TestSortMergeJoin {
             checkIOs(2 * (2 + (2 + TestSortOperator.NEW_RUN_IOS)));
 
             int numRecords = 0;
+            int m = 0;
             Record expectedRecord;
 
             while (outputIterator.hasNext() && numRecords < 400 * 400) {
                 if (numRecords < (400 * 400 / 4)) {
                     expectedRecord = expectedRecord1;
+                    if(numRecords == 39999) {
+                      ++m;
+                    }
                 } else if (numRecords < (400 * 400 / 2)) {
                     expectedRecord = expectedRecord2;
                 } else if (numRecords < 400 * 400 - (400 * 400 / 4)) {

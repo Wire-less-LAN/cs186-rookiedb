@@ -201,7 +201,7 @@ public class SortOperator extends QueryOperator {
         //pass 0
         List<Run> runs = new ArrayList<>();
         while (sourceIterator.hasNext()) {
-            Iterator<Record> chunkIterator = QueryOperator.getBlockIterator(sourceIterator, getSchema(), numBuffers - 1);
+            Iterator<Record> chunkIterator = QueryOperator.getBlockIterator(sourceIterator, getSchema(), numBuffers);
             runs.add(sortRun((chunkIterator)));
         }
 
